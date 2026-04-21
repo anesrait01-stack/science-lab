@@ -2,127 +2,56 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>مخبر العلوم - 100 تجربة</title>
-
+<title>مخبر العلوم</title>
 <style>
-body{font-family:Arial;margin:0;background:#f4f7fb;text-align:center}
-header{background:#1e88e5;color:white;padding:20px}
-input{width:80%;padding:10px;margin:10px;font-size:16px;border-radius:8px}
-.grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px}
-.card{background:white;width:240px;padding:10px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1);cursor:pointer;text-align:right}
-.card:hover{transform:scale(1.03);transition:0.2s}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}
-.modal-content{background:white;width:80%;padding:20px;border-radius:10px;max-height:85%;overflow:auto;text-align:right}
-img{width:100%;margin-top:10px;border-radius:10px}
-.close{float:left;cursor:pointer;font-size:20px}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+header{padding:20px;text-align:center;background:#1e293b}
+input{width:80%;padding:12px;margin:10px;border-radius:10px;border:none}
+.container{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px}
+.card{background:white;color:black;width:220px;padding:10px;border-radius:10px}
+a{text-decoration:none;color:black}
+.level{font-size:12px;color:gray}
 </style>
 </head>
-
 <body>
 
 <header>
 <h1>🧪 مخبر العلوم</h1>
-<p>100 تجربة علمية (ابتدائي - متوسط - ثانوي)</p>
+<p>اضغط على أي تجربة لفتح التفاصيل</p>
 </header>
 
-<input type="text" id="search" onkeyup="search()" placeholder="ابحث عن تجربة...">
+<input id="search" placeholder="ابحث..." oninput="render()">
 
-<div class="grid" id="list"></div>
+<div class="container" id="list"></div>
 
-<div id="modal" class="modal" onclick="closeModal(event)">
-<div class="modal-content">
-<span class="close" onclick="closeModal(event)">❌</span>
-<h2 id="title"></h2>
-<p id="desc"></p>
-<img id="img">
-</div>
-</div>
+<script src="data.js"></script>
 
 <script>
 
-/* =========================
-   100 تجربة جاهزة (مختصرة لكن حقيقية + قابلة للتوسعة)
-   ========================= */
+function render(){
 
-const experiments=[];
-
-function add(name,level,desc,img){
-experiments.push({name,level,desc,img});
-}
-
-/* 🟢 ابتدائي (40 تجربة) */
-add("البركان","ابتدائي","تفاعل حمض وبيكربونات يعطي غاز CO2","https://source.unsplash.com/600x400/?volcano");
-add("الطفو","ابتدائي","الأجسام الأخف تطفو","https://source.unsplash.com/600x400/?water");
-add("المغناطيس","ابتدائي","جذب الحديد","https://source.unsplash.com/600x400/?magnet");
-add("الماء والزيت","ابتدائي","عدم اختلاط السوائل","https://source.unsplash.com/600x400/?oil-water");
-add("الضوء","ابتدائي","انتشار الضوء","https://source.unsplash.com/600x400/?light");
-add("الظل","ابتدائي","تكوين الظل","https://source.unsplash.com/600x400/?shadow");
-add("الهواء","ابتدائي","الهواء له حجم","https://source.unsplash.com/600x400/?air");
-add("الثلج","ابتدائي","تحول الماء","https://source.unsplash.com/600x400/?ice");
-add("الفقاعات","ابتدائي","غاز داخل سائل","https://source.unsplash.com/600x400/?bubbles");
-add("الاحتكاك","ابتدائي","مقاومة الحركة","https://source.unsplash.com/600x400/?friction");
-
-/* (نكرر تلقائيًا للوصول إلى 40) */
-for(let i=0;i<30;i++){
-add("تجربة ابتدائية "+(i+11),"ابتدائي","تجربة تعليمية في العلوم الأساسية","https://source.unsplash.com/600x400/?science");
-}
-
-/* 🟡 متوسط (35 تجربة) */
-add("ضغط الهواء","متوسط","الهواء يضغط على الأشياء","https://source.unsplash.com/600x400/?air-pressure");
-add("الكثافة","متوسط","العلاقة بين الكتلة والحجم","https://source.unsplash.com/600x400/?density");
-add("الحرارة","متوسط","انتقال الطاقة الحرارية","https://source.unsplash.com/600x400/?heat");
-add("المغناطيسية","متوسط","المجالات المغناطيسية","https://source.unsplash.com/600x400/?magnetic");
-add("الضوء","متوسط","انعكاس وانكسار الضوء","https://source.unsplash.com/600x400/?refraction");
-
-for(let i=0;i<30;i++){
-add("تجربة متوسطة "+(i+6),"متوسط","تجربة في الفيزياء والكيمياء","https://source.unsplash.com/600x400/?physics");
-}
-
-/* 🔴 ثانوي (25 تجربة) */
-add("قوانين نيوتن","ثانوي","الحركة والقوة","https://source.unsplash.com/600x400/?newton");
-add("التفاعلات الكيميائية","ثانوي","تغير المادة","https://source.unsplash.com/600x400/?chemistry");
-add("الكهرباء","ثانوي","التيار والمقاومة","https://source.unsplash.com/600x400/?electricity");
-add("الموجات","ثانوي","انتشار الطاقة","https://source.unsplash.com/600x400/?waves");
-
-for(let i=0;i<21;i++){
-add("تجربة ثانوية "+(i+5),"ثانوي","تجربة متقدمة في العلوم","https://source.unsplash.com/600x400/?lab");
-}
-
-/* ========================= */
-
-function render(data){
+let val=document.getElementById("search").value.toLowerCase();
 let list=document.getElementById("list");
 list.innerHTML="";
-data.forEach((e,i)=>{
+
+experiments
+.filter(e=>e.name.toLowerCase().includes(val)||e.level.includes(val))
+.forEach(e=>{
+
 list.innerHTML+=`
-<div class="card" onclick="openModal(${i})">
+<a href="experiment.html?id=${e.id}">
+<div class="card">
 <h3>${e.name}</h3>
-<p>${e.level}</p>
+<div class="level">${e.level}</div>
 </div>
+</a>
 `;
+
 });
+
 }
 
-render(experiments);
-
-function search(){
-let v=document.getElementById("search").value.toLowerCase();
-render(experiments.filter(e=>e.name.toLowerCase().includes(v)||e.level.includes(v)));
-}
-
-function openModal(i){
-let e=experiments[i];
-document.getElementById("modal").style.display="flex";
-document.getElementById("title").innerText=e.name;
-document.getElementById("desc").innerText=e.desc;
-document.getElementById("img").src=e.img;
-}
-
-function closeModal(e){
-if(e.target.id==="modal"||e.target.className==="close"){
-document.getElementById("modal").style.display="none";
-}
-}
+render();
 
 </script>
 
