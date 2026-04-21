@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>مخبر العلوم</title>
+
 <style>
 body{
-font-family: Arial;
+margin:0;
+font-family:Arial;
 background:#f4f7fb;
 text-align:center;
-margin:0;
 }
 
 header{
@@ -17,14 +18,45 @@ color:white;
 padding:20px;
 }
 
+nav{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:15px;
+flex-wrap:wrap;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+background:#e0e0e0;
+}
+
+button.active{
+background:#1e88e5;
+color:white;
+}
+
+input{
+width:80%;
+padding:10px;
+margin:10px;
+font-size:16px;
+}
+
 .card{
 background:white;
-margin:20px auto;
+margin:10px auto;
 padding:15px;
 width:80%;
 border-radius:10px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
+text-align:right;
 }
+
+.hidden{display:none;}
 </style>
 </head>
 
@@ -32,18 +64,82 @@ box-shadow:0 2px 6px rgba(0,0,0,0.1);
 
 <header>
 <h1>🧪 مخبر العلوم</h1>
-<p>موقع التجارب العلمية</p>
+<p>منصة التجارب حسب المستوى الدراسي</p>
 </header>
 
-<div class="card">
-<h2>تجربة البركان</h2>
-<p>خلط الخل مع البيكربونات لإنتاج فوران يشبه البركان.</p>
+<nav>
+<button class="active" onclick="filterLevel('all',this)">الكل</button>
+<button onclick="filterLevel('ابتدائي',this)">ابتدائي</button>
+<button onclick="filterLevel('متوسط',this)">متوسط</button>
+<button onclick="filterLevel('ثانوي',this)">ثانوي</button>
+</nav>
+
+<input type="text" id="search" onkeyup="search()" placeholder="ابحث عن تجربة...">
+
+<!-- التجارب -->
+
+<div class="card" data-level="ابتدائي">
+<h3>البركان البسيط</h3>
+<p>تفاعل الخل مع البيكربونات لإنتاج رغوة.</p>
 </div>
 
-<div class="card">
-<h2>تجربة الكهرباء الساكنة</h2>
-<p>فرك بالون لجذب الورق الصغير.</p>
+<div class="card" data-level="ابتدائي">
+<h3>الكهرباء الساكنة</h3>
+<p>جذب الورق باستخدام بالون.</p>
 </div>
+
+<div class="card" data-level="متوسط">
+<h3>المغناطيس</h3>
+<p>دراسة جذب المعادن.</p>
+</div>
+
+<div class="card" data-level="متوسط">
+<h3>ضغط الهواء</h3>
+<p>تأثير الهواء على الأجسام.</p>
+</div>
+
+<div class="card" data-level="ثانوي">
+<h3>قوانين نيوتن</h3>
+<p>دراسة الحركة والقوة.</p>
+</div>
+
+<div class="card" data-level="ثانوي">
+<h3>انكسار الضوء</h3>
+<p>سلوك الضوء في المواد.</p>
+</div>
+
+<script>
+
+function filterLevel(level,btn){
+
+let cards=document.getElementsByClassName("card");
+let buttons=document.querySelectorAll("button");
+
+buttons.forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+
+for(let i=0;i<cards.length;i++){
+let cardLevel=cards[i].getAttribute("data-level");
+
+if(level==="all" || cardLevel===level){
+cards[i].style.display="block";
+}else{
+cards[i].style.display="none";
+}
+}
+}
+
+function search(){
+let input=document.getElementById("search").value.toLowerCase();
+let cards=document.getElementsByClassName("card");
+
+for(let i=0;i<cards.length;i++){
+let text=cards[i].innerText.toLowerCase();
+cards[i].style.display=text.includes(input)?"block":"none";
+}
+}
+
+</script>
 
 </body>
 </html>
