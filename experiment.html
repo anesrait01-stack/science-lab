@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تفاصيل التجربة</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#111827;color:white;text-align:center}
+.container{padding:20px}
+img{width:90%;border-radius:10px;margin-top:10px}
+a{color:#60a5fa;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1 id="name"></h1>
+<p id="level"></p>
+<p id="desc"></p>
+<img id="img">
+<br><br>
+<a href="index.html">⬅ العودة</a>
+</div>
+
+<script src="data.js"></script>
+
+<script>
+
+const params=new URLSearchParams(window.location.search);
+const id=parseInt(params.get("id"));
+
+const exp=experiments.find(e=>e.id===id);
+
+document.getElementById("name").innerText=exp.name;
+document.getElementById("level").innerText=exp.level;
+document.getElementById("desc").innerText=exp.desc;
+document.getElementById("img").src=exp.img;
+
+</script>
+
+</body>
+</html>
