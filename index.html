@@ -1,57 +1,196 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>مخبر العلوم</title>
+<title>🧪 مخبر العلوم</title>
+
 <style>
-body{margin:0;font-family:Arial;background:#0f172a;color:white}
-header{padding:20px;text-align:center;background:#1e293b}
-input{width:80%;padding:12px;margin:10px;border-radius:10px;border:none}
-.container{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px}
-.card{background:white;color:black;width:220px;padding:10px;border-radius:10px}
-a{text-decoration:none;color:black}
-.level{font-size:12px;color:gray}
+body{
+margin:0;
+font-family: Arial, sans-serif;
+background: linear-gradient(120deg,#0f172a,#1e3a8a,#0ea5e9);
+color:white;
+direction: rtl;
+}
+
+/* العنوان */
+header{
+text-align:center;
+padding:20px;
+font-size:28px;
+font-weight:bold;
+background: rgba(0,0,0,0.4);
+}
+
+/* البحث */
+input{
+width:80%;
+padding:10px;
+margin:20px auto;
+display:block;
+border-radius:10px;
+border:none;
+font-size:16px;
+}
+
+/* الحاوية */
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+padding:20px;
+}
+
+/* بطاقة تجربة */
+.card{
+background: rgba(255,255,255,0.1);
+backdrop-filter: blur(10px);
+padding:15px;
+border-radius:15px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+background: rgba(255,255,255,0.2);
+}
+
+/* نافذة التفاصيل */
+#modal{
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background: linear-gradient(135deg,#1e293b,#0f172a);
+padding:20px;
+border-radius:15px;
+width:80%;
+max-width:600px;
+text-align:center;
+}
+
+.modal-content img{
+width:100%;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#38bdf8;
+color:black;
+cursor:pointer;
+}
 </style>
 </head>
+
 <body>
 
-<header>
-<h1>🧪 مخبر العلوم</h1>
-<p>اضغط على أي تجربة لفتح التفاصيل</p>
-</header>
+<header>🧪 مخبر العلوم - كل التجارب العلمية</header>
 
-<input id="search" placeholder="ابحث..." oninput="render()">
+<input type="text" id="search" placeholder="🔎 ابحث عن تجربة...">
 
-<div class="container" id="list"></div>
+<div class="container" id="box"></div>
 
-<script src="data.js"></script>
+<!-- نافذة التفاصيل -->
+<div id="modal">
+<div class="modal-content">
+<h2 id="title"></h2>
+<p id="desc"></p>
+<img id="img">
+<br>
+<a id="link" target="_blank">🔗 فتح المصدر</a>
+<br>
+<button onclick="closeModal()">إغلاق</button>
+</div>
+</div>
 
 <script>
 
-function render(){
+/* =========================
+📦 كل التجارب (مختصر جاهز)
+========================= */
 
-let val=document.getElementById("search").value.toLowerCase();
-let list=document.getElementById("list");
-list.innerHTML="";
+const data = [
+{
+name:"تجربة الجاذبية",
+level:"ابتدائي",
+desc:"توضح أن جميع الأجسام تسقط بنفس التسارع نحو الأرض بسبب الجاذبية.",
+img:"https://upload.wikimedia.org/wikipedia/commons/3/3b/Gravity.svg",
+link:"#"
+},
+{
+name:"قانون أوم",
+level:"متوسط",
+desc:"يوضح العلاقة بين التوتر والتيار والمقاومة في الدوائر الكهربائية.",
+img:"https://upload.wikimedia.org/wikipedia/commons/3/3f/Ohm%27s_law.svg",
+link:"https://en.wikipedia.org/wiki/Ohm%27s_law"
+},
+{
+name:"قوانين نيوتن",
+level:"ثانوي",
+desc:"تشرح حركة الأجسام وعلاقة القوة بالتسارع ورد الفعل.",
+img:"https://upload.wikimedia.org/wikipedia/commons/3/3b/Newtons_laws_of_motion.svg",
+link:"https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion"
+}
+];
 
-experiments
-.filter(e=>e.name.toLowerCase().includes(val)||e.level.includes(val))
-.forEach(e=>{
+/* =========================
+📌 عرض التجارب
+========================= */
 
-list.innerHTML+=`
-<a href="experiment.html?id=${e.id}">
-<div class="card">
+const box = document.getElementById("box");
+
+function show(list){
+box.innerHTML="";
+list.forEach((e,i)=>{
+let div=document.createElement("div");
+div.className="card";
+div.innerHTML=`
 <h3>${e.name}</h3>
-<div class="level">${e.level}</div>
-</div>
-</a>
+<p>📘 ${e.level}</p>
 `;
-
+div.onclick=()=>{
+document.getElementById("modal").style.display="flex";
+document.getElementById("title").innerText=e.name;
+document.getElementById("desc").innerText=e.desc;
+document.getElementById("img").src=e.img;
+document.getElementById("link").href=e.link;
+};
+box.appendChild(div);
 });
-
 }
 
-render();
+show(data);
+
+/* =========================
+🔎 البحث
+========================= */
+
+document.getElementById("search").addEventListener("input",function(){
+let val=this.value;
+let filtered=data.filter(e=>e.name.includes(val));
+show(filtered);
+});
+
+/* =========================
+❌ إغلاق النافذة
+========================= */
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
 
 </script>
 
