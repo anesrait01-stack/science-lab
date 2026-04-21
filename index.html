@@ -6,8 +6,8 @@
 
 <style>
 body{
-margin:0;
 font-family:Arial;
+margin:0;
 background:#f4f7fb;
 text-align:center;
 }
@@ -18,34 +18,6 @@ color:white;
 padding:20px;
 }
 
-nav{
-display:flex;
-justify-content:center;
-gap:10px;
-margin:15px;
-flex-wrap:wrap;
-}
-
-button{
-padding:10px 15px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-background:#e0e0e0;
-}
-
-button.active{
-background:#1e88e5;
-color:white;
-}
-
-input{
-width:80%;
-padding:10px;
-margin:10px;
-font-size:16px;
-}
-
 .card{
 background:white;
 margin:10px auto;
@@ -53,10 +25,55 @@ padding:15px;
 width:80%;
 border-radius:10px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
+cursor:pointer;
 text-align:right;
 }
 
-.hidden{display:none;}
+.card:hover{
+transform:scale(1.02);
+transition:0.2s;
+}
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background:white;
+padding:20px;
+width:80%;
+border-radius:10px;
+text-align:right;
+max-height:85%;
+overflow:auto;
+}
+
+.close{
+float:left;
+cursor:pointer;
+font-size:20px;
+}
+
+img{
+width:100%;
+margin-top:10px;
+border-radius:10px;
+}
+
+iframe{
+width:100%;
+height:300px;
+margin-top:10px;
+border-radius:10px;
+}
 </style>
 </head>
 
@@ -64,78 +81,68 @@ text-align:right;
 
 <header>
 <h1>🧪 مخبر العلوم</h1>
-<p>منصة التجارب حسب المستوى الدراسي</p>
+<p>اضغط على تجربة لرؤية الشرح والفيديو</p>
 </header>
-
-<nav>
-<button class="active" onclick="filterLevel('all',this)">الكل</button>
-<button onclick="filterLevel('ابتدائي',this)">ابتدائي</button>
-<button onclick="filterLevel('متوسط',this)">متوسط</button>
-<button onclick="filterLevel('ثانوي',this)">ثانوي</button>
-</nav>
-
-<input type="text" id="search" onkeyup="search()" placeholder="ابحث عن تجربة...">
 
 <!-- التجارب -->
 
-<div class="card" data-level="ابتدائي">
-<h3>البركان البسيط</h3>
-<p>تفاعل الخل مع البيكربونات لإنتاج رغوة.</p>
+<div class="card" onclick="openModal(
+'تجربة البركان',
+'تفاعل الخل مع البيكربونات ينتج فوران يشبه البركان.',
+'https://upload.wikimedia.org/wikipedia/commons/3/3c/Vinegar_and_baking_soda_reaction.jpg',
+'https://www.youtube.com/embed/5a5u3g3qk4A'
+)">
+<h3>🌋 البركان</h3>
 </div>
 
-<div class="card" data-level="ابتدائي">
-<h3>الكهرباء الساكنة</h3>
-<p>جذب الورق باستخدام بالون.</p>
+<div class="card" onclick="openModal(
+'الكهرباء الساكنة',
+'فرك بالون يولد شحنة كهربائية تجذب الورق.',
+'https://upload.wikimedia.org/wikipedia/commons/3/3b/Static_electricity_balloon.jpg',
+'https://www.youtube.com/embed/6P8x2p3k0wQ'
+)">
+<h3>⚡ الكهرباء الساكنة</h3>
 </div>
 
-<div class="card" data-level="متوسط">
-<h3>المغناطيس</h3>
-<p>دراسة جذب المعادن.</p>
+<div class="card" onclick="openModal(
+'المغناطيس',
+'المغناطيس يجذب المعادن مثل الحديد.',
+'https://upload.wikimedia.org/wikipedia/commons/2/2b/Magnet.jpg',
+'https://www.youtube.com/embed/7pQ1m8y9x0A'
+)">
+<h3>🧲 المغناطيس</h3>
 </div>
 
-<div class="card" data-level="متوسط">
-<h3>ضغط الهواء</h3>
-<p>تأثير الهواء على الأجسام.</p>
-</div>
+<!-- النافذة -->
 
-<div class="card" data-level="ثانوي">
-<h3>قوانين نيوتن</h3>
-<p>دراسة الحركة والقوة.</p>
-</div>
+<div id="modal" class="modal" onclick="closeModal(event)">
+<div class="modal-content">
+<span class="close" onclick="closeModal(event)">❌</span>
 
-<div class="card" data-level="ثانوي">
-<h3>انكسار الضوء</h3>
-<p>سلوك الضوء في المواد.</p>
+<h2 id="title"></h2>
+<p id="desc"></p>
+
+<img id="img">
+
+<iframe id="video" frameborder="0" allowfullscreen></iframe>
+
+</div>
 </div>
 
 <script>
 
-function filterLevel(level,btn){
-
-let cards=document.getElementsByClassName("card");
-let buttons=document.querySelectorAll("button");
-
-buttons.forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
-
-for(let i=0;i<cards.length;i++){
-let cardLevel=cards[i].getAttribute("data-level");
-
-if(level==="all" || cardLevel===level){
-cards[i].style.display="block";
-}else{
-cards[i].style.display="none";
-}
-}
+function openModal(title,desc,img,video){
+document.getElementById("modal").style.display="flex";
+document.getElementById("title").innerText=title;
+document.getElementById("desc").innerText=desc;
+document.getElementById("img").src=img;
+document.getElementById("video").src=video;
 }
 
-function search(){
-let input=document.getElementById("search").value.toLowerCase();
-let cards=document.getElementsByClassName("card");
-
-for(let i=0;i<cards.length;i++){
-let text=cards[i].innerText.toLowerCase();
-cards[i].style.display=text.includes(input)?"block":"none";
+function closeModal(e){
+if(e.target.id==="modal" || e.target.className==="close"){
+document.getElementById("modal").style.display="none";
+document.getElementById("video").src="";
 }
 }
 
